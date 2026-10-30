@@ -54,6 +54,15 @@ const scenes = [
   ['sejrstegn', 6, 1], ['stjerneskud', 7, 0], ['hjertehaender', 8, 4],
   ['knaejubel', 9, 0], ['sejrsdans', 10, 2]
 ].forEach(([name, image, motion]) => scenes.push({ ...scenes[motion], name, image }));
+// Calibrate by the character's head, rather than the differently padded canvases.
+// Width is relative to the common stage; ground removes each source's lower margin.
+const mascotSizing = {
+  1: { width: 93, ground: 10 }, 2: { width: 112, ground: 6 },
+  3: { width: 111, ground: 4.5 }, 4: { width: 79, ground: 6 },
+  5: { width: 89, ground: 7 }, 6: { width: 112, ground: 6 },
+  7: { width: 101, ground: 7 }, 8: { width: 123, ground: 4.5 },
+  9: { width: 107, ground: 8 }, 10: { width: 115, ground: 3 }
+};
 // Load each original illustration once so scene changes stay immediate.
 const mascotImages = scenes.map((scene) => {
   const image = new Image();
@@ -80,6 +89,9 @@ function celebrate() {
   $('mascot').classList.add('visible');
   $('mascot').dataset.scene = scene.name;
   $('pose').src = mascotImages[lastScene].src;
+  const sizing = mascotSizing[scene.image];
+  $('pose').style.width = `${sizing.width}%`;
+  $('pose').style.transform = `translate(-50%, ${sizing.ground}%)`;
   if (!matchMedia('(prefers-reduced-motion: reduce)').matches) {
     animations.push($('lars').animate(scene.poses.map(([offset, transform]) => ({ offset, transform, easing: 'cubic-bezier(.22,.7,.25,1)' })), { duration: scene.duration, fill: 'both' }));
     animations.push($('score').animate([{transform:'scale(1)'},{transform:'scale(1.025)',offset:.35},{transform:'scale(1)'}], {duration:360,easing:'ease-out'}));

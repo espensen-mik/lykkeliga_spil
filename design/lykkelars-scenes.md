@@ -1,7 +1,9 @@
 # LykkeLars målfejring
 
-Spriteark: `public/lykkelars-scenes.png`. Fremstillet med det indbyggede imagegen-værktøj fra brugerens "LykkeLars' fem jubelanimationer.png".
+Spillet bruger nu brugerens ti originale illustrationer direkte fra `public/mascots/lykkelars-1.png` til `lykkelars-10.png`. Ingen billedgenerering eller beskæring af de nye filer. Det tidligere spriteark og den oprindelige figur er erstattet.
 
-Prompt: Bevar de fem papirklipfigurer, identitet, farver, tøj og ansigtsudtryk. Fjern baggrund, overskrifter, pile, etiketter og skygger. Transparent spriteatlas med fem lige brede celler på én række: jubelhop, sejrspump, glædesdans, klapsalve, kæmpekram. Samme skala, fri margen og fælles baseline, med hopfiguren i luften. Kun eksisterende logoer på tøjet.
+Scenerne er jubelhop, glædesdans, sejrspump, klapsalve, kæmpekram, sejrstegn, stjerneskud, hjertehænder, knæjubel og sejrsdans. De fordeles i blandet rækkefølge, så alle ti vises inden gentagelse.
 
-Hver scene har sit eget Web Animations-forløb med optakt, overshoot og aftagende bevægelse. Tilfældig rækkefølge uden gentagelser, indtil alle fem er vist. Ny scoring afbryder den foregående animation. Reduceret bevægelse viser figuren uden animation. Normal visning skjuler figuren igen efter 2,6 sekunder.
+Billederne vises med bevaret format og bruger multiply-blanding på spillets lyse baggrund. De oprindelige lyse billedbaggrunde er bevaret i filerne.
+
+Animationerne har optakt, overshoot og aftagende bevægelse. Ny scoring afbryder den foregående animation. Reduceret bevægelse viser figuren uden animation. Figuren skjules efter 2,6 sekunder.

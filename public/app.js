@@ -29,26 +29,37 @@ let animations = [];
 let sceneBag = [];
 let lastScene = -1;
 const scenes = [
-  { name: 'jubelhop', duration: 1250, poses: [
+  { name: 'jubelhop', image: 1, duration: 1250, poses: [
     [0, 'translateY(18px) scale(.94,1.04)'], [.12, 'translateY(24px) scale(1.08,.88)'],
     [.38, 'translateY(-52px) rotate(-5deg) scale(.97,1.04)'], [.63, 'translateY(5px) rotate(2deg) scale(1.07,.91)'],
     [.78, 'translateY(-10px) rotate(-1deg) scale(.99,1.02)'], [1, 'none']] },
-  { name: 'sejrspump', duration: 1150, poses: [
+  { name: 'sejrspump', image: 3, duration: 1150, poses: [
     [0, 'translateY(22px) rotate(-8deg) scale(.92)'], [.22, 'translateY(-12px) rotate(5deg) scale(1.07)'],
     [.42, 'translateY(2px) rotate(-3deg) scale(.99)'], [.6, 'translateY(-8px) rotate(3deg) scale(1.035)'],
     [.8, 'rotate(-1deg)'], [1, 'none']] },
-  { name: 'glaedesdans', duration: 1450, poses: [
+  { name: 'glaedesdans', image: 2, duration: 1450, poses: [
     [0, 'translateX(-20px) rotate(-6deg) scale(.94)'], [.2, 'translateX(13px) rotate(7deg) scale(1.03)'],
     [.4, 'translateX(-12px) rotate(-6deg)'], [.59, 'translateX(8px) rotate(4deg)'],
     [.77, 'translateX(-4px) rotate(-2deg)'], [1, 'none']] },
-  { name: 'klapsalve', duration: 1250, poses: [
+  { name: 'klapsalve', image: 4, duration: 1250, poses: [
     [0, 'translateY(20px) scale(.9)'], [.22, 'translateY(-6px) scale(1.045)'],
     [.38, 'scale(.98,1.015) rotate(-2deg)'], [.52, 'scale(1.035,.98) rotate(2deg)'],
     [.67, 'scale(.99,1.01) rotate(-1deg)'], [.81, 'scale(1.015,.99)'], [1, 'none']] },
-  { name: 'kaempekram', duration: 1400, poses: [
+  { name: 'kaempekram', image: 5, duration: 1400, poses: [
     [0, 'translateY(25px) scale(.78) rotate(-4deg)'], [.34, 'translateY(-8px) scale(1.1) rotate(2deg)'],
     [.56, 'translateY(2px) scale(.975) rotate(-1deg)'], [.76, 'scale(1.025)'], [1, 'none']] }
-];
+ ];
+// The new poses share the established soft motion patterns.
+[
+  ['sejrstegn', 6, 1], ['stjerneskud', 7, 0], ['hjertehaender', 8, 4],
+  ['knaejubel', 9, 0], ['sejrsdans', 10, 2]
+].forEach(([name, image, motion]) => scenes.push({ ...scenes[motion], name, image }));
+// Load each original illustration once so scene changes stay immediate.
+const mascotImages = scenes.map((scene) => {
+  const image = new Image();
+  image.src = `/mascots/lykkelars-${scene.image}.png`;
+  return image;
+});
 function nextScene() {
   if (!sceneBag.length) {
     sceneBag = scenes.map((_, index) => index);
@@ -68,11 +79,7 @@ function celebrate() {
   animations = [];
   $('mascot').classList.add('visible');
   $('mascot').dataset.scene = scene.name;
-  const bounds = [0, 460, 860, 1290, 1665, 2172];
-  const width = bounds[lastScene + 1] - bounds[lastScene];
-  $('pose').style.width = `${width / 500 * 100}%`;
-  $('pose').style.backgroundSize = `${2172 / width * 100}% 100%`;
-  $('pose').style.backgroundPosition = `${bounds[lastScene] / (2172 - width) * 100}% 0`;
+  $('pose').src = mascotImages[lastScene].src;
   if (!matchMedia('(prefers-reduced-motion: reduce)').matches) {
     animations.push($('lars').animate(scene.poses.map(([offset, transform]) => ({ offset, transform, easing: 'cubic-bezier(.22,.7,.25,1)' })), { duration: scene.duration, fill: 'both' }));
     animations.push($('score').animate([{transform:'scale(1)'},{transform:'scale(1.025)',offset:.35},{transform:'scale(1)'}], {duration:360,easing:'ease-out'}));

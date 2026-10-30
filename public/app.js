@@ -85,10 +85,82 @@ function celebrate() {
   }
   celebrationTimer = setTimeout(() => $('mascot').classList.remove('visible'), 2600);
 }
+let milestoneParticles = [];
+function clearMilestone() {
+  milestoneParticles.forEach(({ element, animation }) => { animation.cancel(); element.remove(); });
+  milestoneParticles = [];
+  $('milestone-effects').removeAttribute('data-effect');
+}
+function celebrateMilestone(total) {
+  if (total <= 0 || total % 10 !== 0) return;
+  clearMilestone();
+  const effect = total % 1000 === 0 ? 'fireworks' : total % 500 === 0 ? 'hearts' : total % 100 === 0 ? 'streamers' : total % 50 === 0 ? 'confetti' : 'stars';
+  const layer = $('milestone-effects');
+  layer.dataset.effect = effect;
+  $('cheer').textContent = `${total.toLocaleString('da-DK')} MÅL!`;
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  const colors = ['#ef492d', '#e8b449', '#009b8d', '#203a32'];
+  const count = { stars: 16, confetti: 42, streamers: 24, hearts: 28, fireworks: 64 }[effect];
+  for (let i = 0; i < count; i++) {
+    const element = document.createElement('span');
+    element.className = `milestone-particle ${effect}`;
+    element.style.color = colors[i % colors.length];
+    element.style.backgroundColor = ['confetti', 'streamers'].includes(effect) ? colors[i % colors.length] : 'transparent';
+    element.textContent = effect === 'stars' ? '✦' : effect === 'hearts' ? '♥' : '';
+    let frames;
+    let duration = 1400;
+    let delay = i * 12;
+    if (effect === 'confetti' || effect === 'streamers') {
+      element.style.left = `${10 + Math.random() * 80}%`;
+      element.style.top = '-24px';
+      const drift = (Math.random() - .5) * 230;
+      const spin = (Math.random() - .5) * 900;
+      frames = [
+        { transform: 'translate(0,-20px) rotate(0)', opacity: 0 },
+        { opacity: 1, offset: .1 },
+        { transform: `translate(${drift}px,75vh) rotate(${spin}deg)`, opacity: 0 }
+      ];
+      duration = effect === 'streamers' ? 2300 : 1900;
+    } else if (effect === 'hearts') {
+      element.style.left = `${12 + Math.random() * 76}%`;
+      element.style.bottom = '8%';
+      frames = [
+        { transform: 'translateY(20px) scale(.5)', opacity: 0 },
+        { opacity: .85, offset: .15 },
+        { transform: `translate(${(Math.random() - .5) * 130}px,-60vh) rotate(${(Math.random() - .5) * 40}deg) scale(1.1)`, opacity: 0 }
+      ];
+      duration = 2100;
+    } else {
+      const burst = Math.floor(i / 16);
+      element.style.left = effect === 'fireworks' ? `${[22, 78, 35, 65][burst]}%` : '50%';
+      element.style.top = effect === 'fireworks' ? `${[30, 34, 65, 60][burst]}%` : '45%';
+      const angle = (i % 16) / 16 * Math.PI * 2;
+      const radius = effect === 'fireworks' ? 90 + Math.random() * 60 : 110 + Math.random() * 100;
+      const x = Math.cos(angle) * radius;
+      const y = Math.sin(angle) * radius;
+      frames = [
+        { transform: 'translate(-50%,-50%) scale(.15)', opacity: 0 },
+        { opacity: 1, offset: .1 },
+        { transform: `translate(calc(-50% + ${x}px),calc(-50% + ${y}px)) rotate(100deg) scale(1)`, opacity: .9, offset: .6 },
+        { transform: `translate(calc(-50% + ${x * 1.15}px),calc(-50% + ${y + 45}px)) rotate(140deg) scale(.5)`, opacity: 0 }
+      ];
+      if (effect === 'fireworks') { element.style.backgroundColor = colors[i % colors.length]; delay = burst * 210; }
+    }
+    layer.append(element);
+    const animation = element.animate(frames, { duration, delay, easing: 'cubic-bezier(.16,.65,.35,1)', fill: 'both' });
+    const particle = { element, animation };
+    milestoneParticles.push(particle);
+    animation.finished.then(() => {
+      element.remove();
+      milestoneParticles = milestoneParticles.filter((item) => item !== particle);
+    }).catch(() => {});
+  }
+}
+
 function addGoal() {
   if ($('editor').open) return;
   if (storageAvailable) score = readScore();
-  if (score < Number.MAX_SAFE_INTEGER) { saveScore(score + 1); celebrate(); }
+  if (score < Number.MAX_SAFE_INTEGER) { saveScore(score + 1); celebrate(); celebrateMilestone(score); }
 }
 $('goal').addEventListener('click', addGoal);
 document.addEventListener('keydown', (event) => {
@@ -98,6 +170,7 @@ document.addEventListener('keydown', (event) => {
   if (!event.repeat) addGoal();
 });
 $('edit').addEventListener('click', () => {
+  clearMilestone();
   if (storageAvailable) score = readScore();
   $('amount').value = score;
   $('editor').showModal();

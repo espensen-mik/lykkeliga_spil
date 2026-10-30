@@ -86,6 +86,7 @@ function celebrate() {
   celebrationTimer = setTimeout(() => $('mascot').classList.remove('visible'), 2600);
 }
 let milestoneParticles = [];
+let lastSmallEffect = null;
 function clearMilestone() {
   milestoneParticles.forEach(({ element, animation }) => { animation.cancel(); element.remove(); });
   milestoneParticles = [];
@@ -94,7 +95,9 @@ function clearMilestone() {
 function celebrateMilestone(total) {
   if (total <= 0 || total % 10 !== 0) return;
   clearMilestone();
-  const effect = total % 1000 === 0 ? 'fireworks' : total % 500 === 0 ? 'hearts' : total % 100 === 0 ? 'streamers' : total % 50 === 0 ? 'confetti' : 'stars';
+  const choices = ['stars', 'confetti', 'streamers', 'hearts'].filter((effect) => effect !== lastSmallEffect);
+  const effect = total % 100 === 0 ? 'fireworks' : choices[Math.floor(Math.random() * choices.length)];
+  if (effect !== 'fireworks') lastSmallEffect = effect;
   const layer = $('milestone-effects');
   layer.dataset.effect = effect;
   $('cheer').textContent = `${total.toLocaleString('da-DK')} MÅL!`;

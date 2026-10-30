@@ -24,10 +24,33 @@ function saveScore(value) {
   catch { storageAvailable = false; }
   render();
 }
+let celebrationTimer;
+let dance;
+let celebrations = 0;
+function celebrate() {
+  celebrations += 1;
+  clearTimeout(celebrationTimer);
+  if (dance) dance.cancel();
+  $('mascot').classList.add('visible');
+  $('cheer').textContent = ['MÅÅÅL!', 'SÅDAN!', 'JAAAA!'][(celebrations - 1) % 3];
+  if (!matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    const direction = celebrations % 2 ? 1 : -1;
+    dance = $('lars').animate([
+      { transform: 'translateY(35px) rotate(-9deg) scale(.85)', offset: 0 },
+      { transform: `translateY(-30px) rotate(${8 * direction}deg) scale(1.04)`, offset: .2 },
+      { transform: 'translateY(0) rotate(-5deg) scale(1.03,.96)', offset: .38 },
+      { transform: `translateY(-18px) rotate(${-7 * direction}deg) scale(.99,1.02)`, offset: .57 },
+      { transform: 'translateY(0) rotate(5deg)', offset: .75 },
+      { transform: 'translateY(0) rotate(0)', offset: 1 }
+    ], { duration: 1100, easing: 'ease-in-out' });
+    $('score').animate([{transform:'scale(1)'},{transform:'scale(1.035)'},{transform:'scale(1)'}], {duration:240});
+  }
+  celebrationTimer = setTimeout(() => $('mascot').classList.remove('visible'), 2000);
+}
 function addGoal() {
   if ($('editor').open) return;
   if (storageAvailable) score = readScore();
-  if (score < Number.MAX_SAFE_INTEGER) saveScore(score + 1);
+  if (score < Number.MAX_SAFE_INTEGER) { saveScore(score + 1); celebrate(); }
 }
 $('goal').addEventListener('click', addGoal);
 document.addEventListener('keydown', (event) => {

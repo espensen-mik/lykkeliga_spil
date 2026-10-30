@@ -1,0 +1,7 @@
+{
+  "name": "lykkeliga-spil",
+  "private": true,
+  "type": "module",
+  "scripts": { "dev": "node server.mjs", "test": "node --test", "build": "node --check api/score.js && node --check public/app.js" },
+  "engines": { "node": ">=22" }
+}

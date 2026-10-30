@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="da">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#ef492d">
+  <meta name="description" content="Hele LykkeLiga. Én fælles målrekord. Scor på banen, tryk på knappen, og vær med til at løfte tallet.">
+  <title>Målrekorden · LykkeLiga Spil</title>
+  <link rel="stylesheet" href="/style.css"><script src="/app.js" defer></script>
+</head>
+<body>
+  <header><a class="brand" href="/" aria-label="LykkeLiga Spil forside">lykke<span>liga</span><i>spil</i></a><span class="header-note">SMÅ SPIL. STORT FÆLLESSKAB.</span></header>
+  <main>
+    <div class="intro"><span class="eyebrow"><span class="dot"></span> HELE LIGAEN PÅ SAMME HOLD</span><h1>Mange spillere.<br>Én <em>målrekord.</em></h1><p>Hvert mål tæller. Også dit.<br>Scor på banen, tryk her — og løft rekorden sammen med hele LykkeLiga.</p></div>
+    <section class="scoreboard" aria-labelledby="score-title">
+      <div class="board-top"><h2 id="score-title">VORES FÆLLES MÅLTÆLLER</h2><span id="connection" class="status">Forbinder…</span></div>
+      <div class="score" id="score" aria-label="Samlet antal mål">—</div>
+      <p class="score-label">mål fyldt med lykke</p>
+      <div class="milestone"><div><span>Næste milepæl</span><strong id="milestone">1.000 mål</strong></div><div class="track" role="progressbar" aria-label="Frem mod næste milepæl" aria-valuemin="0" aria-valuemax="1000" aria-valuenow="0"><span id="progress"></span></div><p id="remaining">Vi løfter tallet sammen</p></div>
+      <button id="goal" disabled><span class="ball" aria-hidden="true">✦</span> VI HAR SCORET! <span class="plus">+1</span></button>
+      <p class="keyboard">Tryk på knappen eller <kbd>mellemrum</kbd></p>
+      <p id="feedback" role="status" aria-live="polite">Klar til det næste jubelbrøl?</p>
+      <div class="session"><span>Dine mål på denne enhed</span><strong id="personal">0</strong></div>
+    </section>
+    <div class="how"><span class="how-title">SÅ ENKELT ER DET</span><div><b>01</b><span>Scor et mål på banen</span></div><div><b>02</b><span>Giv knappen et tryk</span></div><div><b>03</b><span>Jubl med hele ligaen</span></div></div>
+    <aside id="demo-note" hidden>Du prøver en lokal demo. Dine mål gemmes kun i denne browser. Den fælles tæller bliver aktiv, når fælles lager er tilsluttet.</aside>
+  </main>
+  <footer><span class="footer-mark">Alle kan være med. Alle mål tæller.</span><span>Et lille spil fra LykkeLiga <span aria-hidden="true">♥</span></span></footer>
+  <div id="celebration" aria-hidden="true"></div>
+</body>
+</html>

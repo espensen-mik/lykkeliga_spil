@@ -192,6 +192,8 @@ $('edit').addEventListener('click', () => {
   $('amount').focus();
   $('amount').select();
 });
+// Resume scoring after Save, Cancel, or Escape closes the editor.
+$('editor').addEventListener('close', () => $('goal').focus({ preventScroll: true }));
 $('cancel').addEventListener('click', () => $('editor').close());
 $('edit-form').addEventListener('submit', (event) => {
   event.preventDefault();

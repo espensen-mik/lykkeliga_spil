@@ -1,24 +1,19 @@
 # LykkeLiga Spil
 
-Første spil: en fælles måltæller. Dansk, responsivt og uden framework eller build-afhængigheder.
+En enkel lokal måltæller til holdet. Klik på målknappen eller tryk mellemrum. En tast, der holdes nede, tæller kun ét mål.
 
-## Lokal afprøvning
+Scoren gemmes i browserens localStorage og bliver stående efter genindlæsning og genstart af browseren. Ingen database, serverfunktioner eller konti er nødvendige. Hvis lokal lagring er blokeret, fungerer tælleren stadig, men viser en advarsel om, at scoren ikke gemmes.
 
-Node 22 eller nyere: `npm run dev`, åbn http://localhost:3000.
-På localhost er tælleren tydeligt markeret som **lokal demo** og gemmes i browserens localStorage. Den er ikke en fælles score.
+Scoren følger den konkrete browserprofil og webadresse, ikke hele computeren. Privat browsing, rydning af browserdata og skift fra Vercel-adressen til eget domæne kan derfor give en ny tæller. Flere enheder har hver sin score. Flere åbne faner opdaterer hinanden, men brug én fane til optælling for at undgå samtidige ændringer.
 
-## GitHub → Vercel → spil.lykkeliga.dk
+Det lille bidragstal viser mål siden den aktuelle side blev åbnet. Den store score er det samlede gemte antal. Milepæle ligger for hver 1.000 mål.
 
-1. Opret et GitHub-repository og push disse filer.
-2. Importér repositoryet i Vercel som et projekt med framework "Other". `vercel.json` angiver build og public-mappen.
-3. Tilslut Upstash Redis via Vercel Marketplace. Angiv `UPSTASH_REDIS_REST_URL` og `UPSTASH_REDIS_REST_TOKEN` som servermiljøvariabler. Se `.env.example`. Deploy igen efter ændringer i miljøvariabler.
-4. Tilføj `spil.lykkeliga.dk` i Vercel → Settings → Domains. Opret den DNS-record, Vercel viser, hos domænets DNS-udbyder.
-5. Kontrollér fra to enheder, at mål lægges til samme tæller. Andre enheder opdaterer hvert femte sekund.
+## Udvikling
 
-Den fælles score kræver holdbar serverlagring. Redis er teknisk en lille database, men her bruges kun én tæller samt midlertidige id'er til at forhindre dobbelttælling ved netværksfejl. Ingen konti, spillerprofiler eller databaseskemaer. Hemmeligheder ligger kun på serveren.
+Node 22 eller nyere: `npm run dev`. Åbn http://localhost:3000. `npm run build` kontrollerer JavaScript-syntaks. En tidligere lokal demoscore videreføres automatisk første gang.
 
-API'et bruger atomisk INCR og deduplikerer samme mål-id i 24 timer. Ved fejl kan spilleren prøve samme mål igen. Browserens personlige tæller er kun et lokalt bidragstal, ikke et verificeret spillerregnskab.
+## Deployment
 
-Dette er en tillidsbaseret tæller: gentagne bevidste klik eller direkte API-kald kan øge tallet. Den har ingen login eller anti-snyd. Serveren afviser browserindsendelser fra andre origins. Ingen kunstig startscore eller opdigtet rekord er indsat. Milepæle kommer for hver 1.000 mål; en egentlig tidligere rekord kan sættes ind, når den kendes.
+GitHub-repoet er forbundet med Vercel. Push til main udløser en deployment. `vercel.json` vælger framework "Other" og public som statisk outputmappe. Ingen miljøvariabler er nødvendige.
 
-`npm test` tester serverens fejltilstande og atomiske indsendelse uden at kontakte eksterne tjenester. `npm run build` kontrollerer JavaScript-syntaks.
+Siden bruger foreløbig https://lykkeliga-spil.vercel.app/. Senere kan spil.lykkeliga.dk tilføjes under Vercel → Settings → Domains med den DNS-record, Vercel angiver. Lokal score flyttes ikke automatisk mellem de to adresser.

@@ -1,35 +1,32 @@
 const $ = (id) => document.getElementById(id);
-const demo = ['localhost', '127.0.0.1'].includes(location.hostname);
-const read = (key) => { try { return Math.max(0, Number(localStorage.getItem(key)) || 0); } catch { return 0; } };
-const save = (key, value) => { try { localStorage.setItem(key, String(value)); } catch { /* Storage can be disabled. */ } };
-let personal = read('ll-personal');
-let score = 0;
-let busy = false;
-let pendingId = null;
-let connected = false;
-let syncing = false;
-$('personal').textContent = personal.toLocaleString('da-DK');
-function render(value) {
-  score = value;
+const storageKey = 'll-score-v1';
+const validScore = (value) => Number.isSafeInteger(value) && value >= 0 ? value : 0;
+let storageAvailable = true;
+function readScore() {
+  try {
+    return validScore(Number(localStorage.getItem(storageKey) ?? localStorage.getItem('ll-demo') ?? 0));
+  } catch {
+    storageAvailable = false;
+    return 0;
+  }
+}
+let score = readScore();
+let personal = 0;
+function updateStorageStatus() {
+  $('connection').textContent = storageAvailable ? 'Gemt i denne browser' : 'Gemmes ikke';
+  $('demo-note').textContent = storageAvailable
+    ? 'Målene gemmes i denne browser på denne computer. Brug samme browser og adresse næste gang. Rydder du browserdata, forsvinder tælleren.'
+    : 'Browseren tillader ikke lokal lagring. Du kan tælle mål, men de forsvinder, når siden lukkes eller genindlæses.';
+}
+function render() {
   $('score').textContent = score.toLocaleString('da-DK');
   const target = (Math.floor(score / 1000) + 1) * 1000;
   $('milestone').textContent = `${target.toLocaleString('da-DK')} mål`;
-  $('remaining').textContent = `${(target - score).toLocaleString('da-DK')} mål til næste fælles jubelbrøl`;
+  $('remaining').textContent = `${(target - score).toLocaleString('da-DK')} mål til næste jubelbrøl`;
   $('progress').style.width = `${score / target * 100}%`;
   const track = document.querySelector('[role="progressbar"]');
   track.setAttribute('aria-valuemax', target);
   track.setAttribute('aria-valuenow', score);
-}
-async function request(method = 'GET', id) {
-  const response = await fetch('/api/score', { method, cache: 'no-store', headers: id ? { 'Idempotency-Key': id } : {}, signal: AbortSignal.timeout(8000) });
-  if (!response.ok) {
-    const error = new Error('Offline');
-    error.status = response.status;
-    throw error;
-  }
-  const result = await response.json();
-  if (!Number.isSafeInteger(result.score) || result.score < 0) throw new Error('Invalid score');
-  return result.score;
 }
 function celebrate() {
   if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
@@ -44,52 +41,35 @@ function celebrate() {
     setTimeout(() => piece.remove(), 1000);
   }
 }
-async function addGoal() {
-  if (busy || !connected) return;
-  busy = true;
-  $('goal').disabled = true;
-  pendingId ||= crypto.randomUUID();
-  try {
-    const next = demo ? read('ll-demo') + 1 : await request('POST', pendingId);
-    if (demo) save('ll-demo', next);
-    pendingId = null;
-    render(Math.max(score, next));
-    personal += 1;
-    save('ll-personal', personal);
-    $('personal').textContent = personal.toLocaleString('da-DK');
-    $('feedback').textContent = ['JAAAA! Det mål er med i fællesskabet.', 'SÅDAN! Ét mål mere til hele ligaen.', 'MÅÅÅL! Sammen løfter vi rekorden.'][personal % 3];
-    celebrate();
-  } catch {
-    $('feedback').textContent = 'Ingen forbindelse. Tryk igen for at prøve samme mål.';
-  } finally {
-    busy = false;
-    $('goal').disabled = false;
-  }
+function addGoal() {
+  if (score >= Number.MAX_SAFE_INTEGER) return;
+  // Read the latest saved value if another tab has counted a goal.
+  if (storageAvailable) score = Math.max(score, readScore());
+  score += 1;
+  try { localStorage.setItem(storageKey, String(score)); }
+  catch { storageAvailable = false; }
+  personal += 1;
+  render();
+  updateStorageStatus();
+  $('personal').textContent = personal.toLocaleString('da-DK');
+  $('feedback').textContent = ['JAAAA! Endnu et mål til holdet.', 'SÅDAN! Ét mål tættere på rekorden.', 'MÅÅÅL! Sammen løfter vi tallet.'][personal % 3];
+  celebrate();
 }
 $('goal').addEventListener('click', addGoal);
 document.addEventListener('keydown', (event) => {
-  if (event.code !== 'Space' || event.altKey || event.ctrlKey || event.metaKey || /INPUT|TEXTAREA|SELECT|BUTTON|A/.test(event.target.tagName) || event.target.isContentEditable) return;
+  if (event.code !== 'Space' || event.altKey || event.ctrlKey || event.metaKey) return;
+  if (event.target !== $('goal') && (/INPUT|TEXTAREA|SELECT|BUTTON|A/.test(event.target.tagName) || event.target.isContentEditable)) return;
   event.preventDefault();
   if (!event.repeat) addGoal();
 });
-async function sync() {
-  if (busy || syncing || document.hidden) return;
-  syncing = true;
-  try {
-    render(demo ? read('ll-demo') : Math.max(score, await request()));
-    connected = true;
-    $('connection').textContent = demo ? 'Lokal demo' : '● Fælles tæller';
-    $('goal').disabled = false;
-  } catch (error) {
-    $('connection').textContent = error.status === 503 ? 'Tæller ikke tilsluttet' : 'Ingen forbindelse';
-    if (!connected) $('feedback').textContent = error.status === 503
-      ? 'Målknappen åbner, når det fælles lager er tilsluttet.'
-      : 'Vi kan ikke få forbindelse til tælleren. Vi prøver automatisk igen.';
-  } finally {
-    syncing = false;
+window.addEventListener('storage', (event) => {
+  if (event.key === storageKey || event.key === null) {
+    score = readScore();
+    render();
+    updateStorageStatus();
   }
-}
-$('demo-note').hidden = !demo;
-sync();
-setInterval(sync, 5000);
-document.addEventListener('visibilitychange', () => { if (!document.hidden) sync(); });
+});
+$('demo-note').hidden = false;
+$('goal').disabled = false;
+render();
+updateStorageStatus();

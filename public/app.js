@@ -11,65 +11,47 @@ function readScore() {
   }
 }
 let score = readScore();
-let personal = 0;
-function updateStorageStatus() {
-  $('connection').textContent = storageAvailable ? 'Gemt i denne browser' : 'Gemmes ikke';
-  $('demo-note').textContent = storageAvailable
-    ? 'Målene gemmes i denne browser på denne computer. Brug samme browser og adresse næste gang. Rydder du browserdata, forsvinder tælleren.'
-    : 'Browseren tillader ikke lokal lagring. Du kan tælle mål, men de forsvinder, når siden lukkes eller genindlæses.';
-}
 function render() {
-  $('score').textContent = score.toLocaleString('da-DK');
-  const target = (Math.floor(score / 1000) + 1) * 1000;
-  $('milestone').textContent = `${target.toLocaleString('da-DK')} mål`;
-  $('remaining').textContent = `${(target - score).toLocaleString('da-DK')} mål til næste jubelbrøl`;
-  $('progress').style.width = `${score / target * 100}%`;
-  const track = document.querySelector('[role="progressbar"]');
-  track.setAttribute('aria-valuemax', target);
-  track.setAttribute('aria-valuenow', score);
+  const formatted = score.toLocaleString('da-DK');
+  $('score').textContent = formatted;
+  // Keep long totals fully visible on the display.
+  $('score').style.fontSize = formatted.length > 5 ? `min(${145 / formatted.length}vw, 44vh)` : '';
+  $('storage-warning').hidden = storageAvailable;
 }
-function celebrate() {
-  if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-  $('score').classList.remove('pop');
-  void $('score').offsetWidth;
-  $('score').classList.add('pop');
-  for (let i = 0; i < 24; i++) {
-    const piece = document.createElement('span');
-    piece.className = 'confetti';
-    piece.style.cssText = `--x:${(Math.random() - .5) * 650}px;--y:${(Math.random() - .65) * 600}px;--r:${Math.random() * 720}deg;background:${['#ef492d', '#e7ef9a', '#203a32'][i % 3]}`;
-    $('celebration').append(piece);
-    setTimeout(() => piece.remove(), 1000);
-  }
+function saveScore(value) {
+  score = value;
+  try { localStorage.setItem(storageKey, String(score)); storageAvailable = true; }
+  catch { storageAvailable = false; }
+  render();
 }
 function addGoal() {
-  if (score >= Number.MAX_SAFE_INTEGER) return;
-  // Read the latest saved value if another tab has counted a goal.
-  if (storageAvailable) score = Math.max(score, readScore());
-  score += 1;
-  try { localStorage.setItem(storageKey, String(score)); }
-  catch { storageAvailable = false; }
-  personal += 1;
-  render();
-  updateStorageStatus();
-  $('personal').textContent = personal.toLocaleString('da-DK');
-  $('feedback').textContent = ['JAAAA! Endnu et mål til holdet.', 'SÅDAN! Ét mål tættere på rekorden.', 'MÅÅÅL! Sammen løfter vi tallet.'][personal % 3];
-  celebrate();
+  if ($('editor').open) return;
+  if (storageAvailable) score = readScore();
+  if (score < Number.MAX_SAFE_INTEGER) saveScore(score + 1);
 }
 $('goal').addEventListener('click', addGoal);
 document.addEventListener('keydown', (event) => {
-  if (event.code !== 'Space' || event.altKey || event.ctrlKey || event.metaKey) return;
+  if ($('editor').open || event.code !== 'Space' || event.altKey || event.ctrlKey || event.metaKey) return;
   if (event.target !== $('goal') && (/INPUT|TEXTAREA|SELECT|BUTTON|A/.test(event.target.tagName) || event.target.isContentEditable)) return;
   event.preventDefault();
   if (!event.repeat) addGoal();
 });
-window.addEventListener('storage', (event) => {
-  if (event.key === storageKey || event.key === null) {
-    score = readScore();
-    render();
-    updateStorageStatus();
-  }
+$('edit').addEventListener('click', () => {
+  if (storageAvailable) score = readScore();
+  $('amount').value = score;
+  $('editor').showModal();
+  $('amount').focus();
+  $('amount').select();
 });
-$('demo-note').hidden = false;
-$('goal').disabled = false;
+$('cancel').addEventListener('click', () => $('editor').close());
+$('edit-form').addEventListener('submit', (event) => {
+  event.preventDefault();
+  const value = $('amount').valueAsNumber;
+  if (!Number.isSafeInteger(value) || value < 0) return;
+  saveScore(value);
+  $('editor').close();
+});
+window.addEventListener('storage', (event) => {
+  if (event.key === storageKey || event.key === null) { score = readScore(); render(); }
+});
 render();
-updateStorageStatus();

@@ -6,7 +6,7 @@ Scoren gemmes i browserens localStorage og bliver stående efter genindlæsning 
 
 Scoren følger den konkrete browserprofil og webadresse, ikke hele computeren. Privat browsing, rydning af browserdata og skift fra Vercel-adressen til eget domæne kan derfor give en ny tæller. Flere enheder har hver sin score. Flere åbne faner opdaterer hinanden, men brug én fane til optælling for at undgå samtidige ændringer.
 
-Det lille bidragstal viser mål siden den aktuelle side blev åbnet. Den store score er det samlede gemte antal. Milepæle ligger for hver 1.000 mål.
+Skærmen viser KVISØE REKORD 2026, det gemte målantal og LykkeLiga-logoet. "Ret antal mål" åbner et felt til at gendanne eller korrigere den samlede score. Gem bekræfter ændringen; Annuller eller Escape lukker uden ændringer.
 
 ## Udvikling
 

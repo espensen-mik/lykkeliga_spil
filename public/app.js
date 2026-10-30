@@ -7,6 +7,7 @@ let score = 0;
 let busy = false;
 let pendingId = null;
 let connected = false;
+let syncing = false;
 $('personal').textContent = personal.toLocaleString('da-DK');
 function render(value) {
   score = value;
@@ -20,8 +21,12 @@ function render(value) {
   track.setAttribute('aria-valuenow', score);
 }
 async function request(method = 'GET', id) {
-  const response = await fetch('/api/score', { method, cache: 'no-store', headers: id ? { 'Idempotency-Key': id } : {} });
-  if (!response.ok) throw new Error('Offline');
+  const response = await fetch('/api/score', { method, cache: 'no-store', headers: id ? { 'Idempotency-Key': id } : {}, signal: AbortSignal.timeout(8000) });
+  if (!response.ok) {
+    const error = new Error('Offline');
+    error.status = response.status;
+    throw error;
+  }
   const result = await response.json();
   if (!Number.isSafeInteger(result.score) || result.score < 0) throw new Error('Invalid score');
   return result.score;
@@ -68,15 +73,20 @@ document.addEventListener('keydown', (event) => {
   if (!event.repeat) addGoal();
 });
 async function sync() {
-  if (busy || document.hidden) return;
+  if (busy || syncing || document.hidden) return;
+  syncing = true;
   try {
     render(demo ? read('ll-demo') : Math.max(score, await request()));
     connected = true;
     $('connection').textContent = demo ? 'Lokal demo' : '● Fælles tæller';
     $('goal').disabled = false;
-  } catch {
-    $('connection').textContent = 'Ingen forbindelse';
-    if (!connected) $('feedback').textContent = 'Den fælles tæller er ikke tilgængelig. Vi prøver igen om lidt.';
+  } catch (error) {
+    $('connection').textContent = error.status === 503 ? 'Tæller ikke tilsluttet' : 'Ingen forbindelse';
+    if (!connected) $('feedback').textContent = error.status === 503
+      ? 'Målknappen åbner, når det fælles lager er tilsluttet.'
+      : 'Vi kan ikke få forbindelse til tælleren. Vi prøver automatisk igen.';
+  } finally {
+    syncing = false;
   }
 }
 $('demo-note').hidden = !demo;

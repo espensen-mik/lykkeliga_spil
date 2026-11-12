@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="da">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f7f4eb">
+  <meta name="description" content="KVIE SØ REKORD 2026 – i lykkelige håndboldmål.">
+  <title>KVIE SØ REKORD 2026 · LykkeLiga</title>
+  <link rel="stylesheet" href="style.css"><script src="app.js" defer></script>
+</head>
+<body>
+  <main>
+    <h1>KVIE SØ REKORD 2026 <span>– i lykkelige håndboldmål</span></h1>
+    <div id="score" class="score" role="status" aria-label="Antal mål" aria-live="polite">0</div>
+    <div class="controls">
+      <button id="goal" class="goal" aria-describedby="keyboard-hint">Tryk for mål</button>
+      <p id="keyboard-hint" class="keyboard-hint">Du kan også trykke <kbd>SPACE</kbd></p>
+      <button id="edit" class="edit">Ret antal mål</button>
+    </div>
+    <p id="storage-warning" role="alert" hidden>Scoren kan ikke gemmes i denne browser.</p>
+  </main>
+  <footer><img src="../lykkeliga-logo.svg" alt="LykkeLiga" width="180"></footer>
+  <div id="mascot" class="mascot" aria-hidden="true"><div id="lars" class="lars-sprite"><img id="pose" src="mascots/lykkelars-1.png" alt="" decoding="async"></div><span class="mascot-shadow"></span></div>
+  <div id="milestone-effects" aria-hidden="true"></div>
+  <dialog id="editor" aria-labelledby="edit-title">
+    <form id="edit-form">
+      <h2 id="edit-title">Ret antal mål</h2>
+      <label for="amount">Antal mål</label>
+      <input id="amount" name="amount" type="number" min="0" max="9007199254740991" step="1" required inputmode="numeric">
+      <div class="dialog-actions"><button id="cancel" type="button" class="cancel">Annuller</button><button type="submit" class="save">Gem</button></div>
+    </form>
+  </dialog>
+</body>
+</html>

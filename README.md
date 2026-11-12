@@ -1,4 +1,16 @@
-# LykkeLiga Spil
+# LykkeSpil
+
+Små spil fra LykkeLiga, samlet på én forside.
+
+| Adresse | Indhold | Mappe |
+| --- | --- | --- |
+| `/` | Forsiden LykkeSpil med en plakat for hvert spil | `public/index.html` |
+| `/maalrekord/` | Kvie Sø Rekord 2026 – måltæller | `public/maalrekord/` |
+| `/julelykke/` | JuleLykke – julehygge med ét tryk | `public/julelykke/` |
+
+Et nyt spil lægges i sin egen undermappe i `public/` og får et kort på forsiden (`.card` i `public/index.html`) med et billede i `public/covers/`.
+
+## Kvie Sø Rekord 2026
 
 En enkel lokal måltæller til holdet. Klik på målknappen eller tryk mellemrum. En tast, der holdes nede, tæller kun ét mål.
 
@@ -8,9 +20,17 @@ Scoren følger den konkrete browserprofil og webadresse, ikke hele computeren. P
 
 Skærmen viser KVIE SØ REKORD 2026, det gemte målantal og LykkeLiga-logoet. "Ret antal mål" åbner et felt til at gendanne eller korrigere den samlede score. Gem bekræfter ændringen; Annuller eller Escape lukker uden ændringer.
 
+## JuleLykke
+
+Fuldskærmsspil i 16:9 til buzzerknap (mellemrum, Enter eller klik). Byen står i en rolig standby, og hvert tryk udløser én tilfældig hændelse, hvorefter byen vender tilbage til standby.
+
+Tegningerne ligger som kildefiler i `Julelykke/` (huse, julemand, biler og scooter) og flettes ind i `public/julelykke/index.html` af `python3 Julelykke/build-art.py`. Kør scriptet igen, hvis en af SVG-filerne ændres. Kildefilerne udgives ikke.
+
+`/julelykke/?vindue` starter uden fuldskærm, og `/julelykke/?plakat` viser den faste aftenscene, som forsidebilledet `public/covers/julelykke.jpg` er taget fra.
+
 ## Udvikling
 
-Node 22 eller nyere: `npm run dev`. Åbn http://localhost:3000. `npm run build` kontrollerer JavaScript-syntaks. En tidligere lokal demoscore videreføres automatisk første gang.
+Node 22 eller nyere: `npm run dev`. Åbn http://localhost:3000. Serveren viser hele `public/`. `npm run build` kontrollerer JavaScript-syntaks. En tidligere lokal demoscore videreføres automatisk første gang.
 
 ## Deployment
 

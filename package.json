@@ -4,7 +4,7 @@
   "type": "module",
   "scripts": {
     "dev": "node server.mjs",
-    "build": "node --check public/app.js && node --check server.mjs"
+    "build": "node --check public/maalrekord/app.js && node --check public/julelykke/game.js && node --check server.mjs"
   },
   "engines": {
     "node": ">=22"

@@ -1,33 +1,111 @@
 <!doctype html>
 <html lang="da">
 <head>
-  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#f7f4eb">
-  <meta name="description" content="KVIE SØ REKORD 2026 – i lykkelige håndboldmål.">
-  <title>KVIE SØ REKORD 2026 · LykkeLiga</title>
-  <link rel="stylesheet" href="/style.css"><script src="/app.js" defer></script>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#14261f">
+<meta name="description" content="LykkeSpil – små spil fra LykkeLiga.">
+<title>LykkeSpil · LykkeLiga</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root { --bg: #14261f; --bg2: #1b3329; --paper: #f7f4eb; --ink: #203a32; --red: #ef492d; --muted: #a9b8ae; }
+  * { box-sizing: border-box; }
+  html { background: var(--bg); }
+  body { margin: 0; min-height: 100svh; background: var(--bg); color: var(--paper); font-family: 'DM Sans', system-ui, sans-serif; display: flex; flex-direction: column; }
+  a { color: inherit; text-decoration: none; }
+  .wrap { width: min(1280px, 100% - 48px); margin-inline: auto; }
+
+  header { display: flex; align-items: center; gap: 18px; padding: 22px 0; }
+  header img { height: 34px; width: auto; filter: invert(1); opacity: .92; }
+  .brand { font-family: 'Barlow Condensed', Impact, sans-serif; font-weight: 800; font-size: 34px; letter-spacing: .02em; line-height: 1; }
+  .brand span { color: var(--red); }
+
+  /* Udvalgt spil */
+  .hero { position: relative; display: block; border-radius: 20px; overflow: hidden; aspect-ratio: 21 / 9; min-height: 340px; width: 100%; background: #0d1a15; isolation: isolate; }
+  .hero img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 62%; transition: transform .6s ease; }
+  .hero::after { content: ''; position: absolute; inset: 0; background: linear-gradient(90deg, rgba(13, 26, 21, .92) 0%, rgba(13, 26, 21, .7) 34%, rgba(13, 26, 21, 0) 66%); z-index: 1; }
+  .hero:hover img, .hero:focus-visible img { transform: scale(1.03); }
+  .hero-text { position: absolute; z-index: 2; left: clamp(22px, 4.5vw, 64px); bottom: clamp(22px, 4.5vw, 60px); max-width: min(440px, 62%); }
+  .tag { display: inline-block; font-size: 12px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: #ffd27a; margin-bottom: 10px; }
+  .hero h1 { font-family: 'Barlow Condensed', Impact, sans-serif; font-weight: 800; font-size: clamp(44px, 7vw, 96px); line-height: .92; margin: 0 0 14px; letter-spacing: .01em; }
+  .hero p { margin: 0 0 22px; font-size: clamp(15px, 1.35vw, 18px); line-height: 1.5; color: #e4ebe5; }
+  .play { display: inline-flex; align-items: center; gap: 10px; background: var(--red); color: #fff; font-weight: 700; font-size: 17px; padding: 14px 28px; border-radius: 10px; transition: transform .15s ease, background .15s ease; }
+  .play::before { content: ''; border-left: 13px solid #fff; border-top: 8px solid transparent; border-bottom: 8px solid transparent; }
+  .hero:hover .play { transform: translateY(-2px); background: #ff5a3d; }
+
+  /* Rækken med alle spil */
+  h2 { font-family: 'Barlow Condensed', Impact, sans-serif; font-weight: 700; font-size: 28px; letter-spacing: .03em; margin: 44px 0 16px; }
+  .row { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr)); gap: 22px; }
+  .card { display: block; border-radius: 14px; outline-offset: 4px; }
+  .cover { position: relative; aspect-ratio: 16 / 9; border-radius: 14px; overflow: hidden; background: var(--bg2); container-type: inline-size; transition: transform .2s ease, box-shadow .2s ease; box-shadow: 0 6px 18px rgba(0, 0, 0, .35); }
+  .cover > img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .card:hover .cover, .card:focus-visible .cover { transform: scale(1.035); box-shadow: 0 14px 34px rgba(0, 0, 0, .5), 0 0 0 3px var(--paper); }
+  .card h3 { margin: 14px 0 4px; font-size: 18px; font-weight: 700; }
+  .card p { margin: 0; font-size: 14px; line-height: 1.45; color: var(--muted); }
+  a:focus-visible { outline: 3px solid var(--paper); }
+
+  /* Plakat til målrekord-spillet */
+  .cover.maal { background: var(--paper); color: var(--ink); }
+  .cover.maal .t { position: absolute; left: 7cqw; top: 50%; transform: translateY(-50%); font-family: 'Barlow Condensed', Impact, sans-serif; font-weight: 800; line-height: .9; }
+  .cover.maal .t small { display: block; font-size: 6.6cqw; letter-spacing: .03em; }
+  .cover.maal .t b { display: block; font-size: 22cqw; color: var(--red); letter-spacing: -.01em; }
+  .cover.maal .t i { display: block; font: 500 4.2cqw 'DM Sans', sans-serif; margin-top: 1.5cqw; }
+  .cover.maal img { position: absolute; right: 1cqw; bottom: -3cqw; width: 40cqw; height: auto; object-fit: contain; mix-blend-mode: multiply; }
+
+  .soon .cover { display: grid; place-items: center; background: transparent; border: 2px dashed #3b5a4d; box-shadow: none; color: var(--muted); font-weight: 600; }
+  footer { margin-top: auto; padding: 48px 0 28px; color: #6f8478; font-size: 13px; }
+
+  @media (max-width: 640px) {
+    .hero { aspect-ratio: 4 / 5; }
+    .hero::after { background: linear-gradient(0deg, rgba(13, 26, 21, .95) 0%, rgba(13, 26, 21, .6) 45%, rgba(13, 26, 21, 0) 75%); }
+    .hero img { object-position: 58% 50%; }
+    .hero-text { max-width: none; right: 22px; }
+  }
+  @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
 </head>
 <body>
+<div class="wrap">
+  <header>
+    <img src="lykkeliga-logo.svg" alt="LykkeLiga">
+    <div class="brand">Lykke<span>Spil</span></div>
+  </header>
+
   <main>
-    <h1>KVIE SØ REKORD 2026 <span>– i lykkelige håndboldmål</span></h1>
-    <div id="score" class="score" role="status" aria-label="Antal mål" aria-live="polite">0</div>
-    <div class="controls">
-      <button id="goal" class="goal" aria-describedby="keyboard-hint">Tryk for mål</button>
-      <p id="keyboard-hint" class="keyboard-hint">Du kan også trykke <kbd>SPACE</kbd></p>
-      <button id="edit" class="edit">Ret antal mål</button>
+    <a class="hero" href="julelykke/">
+      <img src="covers/julelykke.jpg" alt="Juleby om aftenen med juletræ, snemand og lyskæder">
+      <div class="hero-text">
+        <span class="tag">Nyhed · Jul</span>
+        <h1>JuleLykke</h1>
+        <p>Tryk på knappen, og se hvad der sker i LykkeBy. Sne, nisser, nordlys – og måske suser julemanden forbi.</p>
+        <span class="play">Spil nu</span>
+      </div>
+    </a>
+
+    <h2>Alle spil</h2>
+    <div class="row">
+      <a class="card" href="julelykke/">
+        <div class="cover"><img src="covers/julelykke.jpg" alt="" loading="lazy"></div>
+        <h3>JuleLykke</h3>
+        <p>Julehygge med ét tryk. Til buzzerknap eller mellemrumstast på storskærm.</p>
+      </a>
+      <a class="card" href="maalrekord/">
+        <div class="cover maal">
+          <div class="t"><small>KVIE SØ REKORD</small><b>2026</b><i>i lykkelige håndboldmål</i></div>
+          <img src="covers/lykkelars.png" alt="" loading="lazy">
+        </div>
+        <h3>Kvie Sø Rekord 2026</h3>
+        <p>Måltælleren, der holder styr på alle de lykkelige håndboldmål.</p>
+      </a>
+      <div class="card soon" aria-hidden="true">
+        <div class="cover">Flere spil på vej</div>
+      </div>
     </div>
-    <p id="storage-warning" role="alert" hidden>Scoren kan ikke gemmes i denne browser.</p>
   </main>
-  <footer><img src="/lykkeliga-logo.svg" alt="LykkeLiga" width="180"></footer>
-  <div id="mascot" class="mascot" aria-hidden="true"><div id="lars" class="lars-sprite"><img id="pose" src="/mascots/lykkelars-1.png" alt="" decoding="async"></div><span class="mascot-shadow"></span></div>
-  <div id="milestone-effects" aria-hidden="true"></div>
-  <dialog id="editor" aria-labelledby="edit-title">
-    <form id="edit-form">
-      <h2 id="edit-title">Ret antal mål</h2>
-      <label for="amount">Antal mål</label>
-      <input id="amount" name="amount" type="number" min="0" max="9007199254740991" step="1" required inputmode="numeric">
-      <div class="dialog-actions"><button id="cancel" type="button" class="cancel">Annuller</button><button type="submit" class="save">Gem</button></div>
-    </form>
-  </dialog>
+
+  <footer>LykkeSpil · små spil fra LykkeLiga</footer>
+</div>
 </body>
 </html>

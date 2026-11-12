@@ -66,7 +66,7 @@ const mascotSizing = {
 // Load each original illustration once so scene changes stay immediate.
 const mascotImages = scenes.map((scene) => {
   const image = new Image();
-  image.src = `/mascots/lykkelars-${scene.image}.png`;
+  image.src = `mascots/lykkelars-${scene.image}.png`;
   return image;
 });
 function nextScene() {

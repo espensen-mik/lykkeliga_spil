@@ -3,3 +3,6 @@
 .vercel
 node_modules
 .DS_Store
+.claude
+# Originale tegnefiler til JuleLykke (licenseret materiale) udgives ikke
+Julelykke/*.svg

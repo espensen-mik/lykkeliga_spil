@@ -1,0 +1,169 @@
+* { box-sizing: border-box; margin: 0; }
+html, body { height: 100%; background: #000; overflow: hidden; }
+body { display: grid; place-items: center; }
+
+/* 16:9-scene, der skalerer til skærmen */
+#stage {
+  position: relative;
+  width: min(100vw, 100vh * 16 / 9);
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  container-type: size;
+  cursor: none;
+  user-select: none;
+  font-family: ui-rounded, "Arial Rounded MT Bold", "Trebuchet MS", system-ui, sans-serif;
+}
+#scene, #fx { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+#fx { pointer-events: none; }
+
+/* ---------- Dag / aften ---------- */
+#skyNight, .nightonly { opacity: 0; transition: opacity 1.5s ease; }
+.dayonly { transition: opacity 1.5s ease; }
+.night #skyNight, .night .nightonly { opacity: 1; }
+.night .dayonly { opacity: 0; }
+
+/* Illustrationens farver (lykkeby.svg) */
+.st0 { fill: #ec693d; } .st1 { fill: #b14f2e; } .st2 { fill: #ecb814; } .st3 { fill: #fff4e2; } .st4 { fill: #1d3130; }
+.st5 { fill: #ffe1ad; } .st6 { fill: #00a388; } .st7 { fill: #ffedce; } .st8 { fill: #733f2c; } .st9 { fill: #d9bc86; }
+
+/* Om aftenen bliver huse, sne og bakker mørke, så vinduer og lyskæder kan lyse */
+#artTown [class^="st"], .artcopy [class^="st"], .nf, .ns { transition: fill 1.5s ease, stroke 1.5s ease; }
+.night .st0 { fill: #6e3528; } .night .st1 { fill: #552a20; } .night .st2 { fill: #74601f; } .night .st3 { fill: #7f9193; } .night .st4 { fill: #121f1e; }
+.night .st5 { fill: #7b8e90; } .night .st6 { fill: #0a5249; } .night .st7 { fill: #74888a; } .night .st8 { fill: #38201a; } .night .st9 { fill: #6a5f4a; }
+.night .nf { fill: var(--n); }
+.night .ns { stroke: var(--n); }
+.night .glow.st0 { fill: #ff8a4d; }
+.night .glow.st2 { fill: #ffd24a; }
+#carLayer, #sign, #scooterLayer { transition: filter 1.5s ease; }
+.night #carLayer, .night #sign, .night #scooterLayer { filter: brightness(.5) saturate(.85); }
+
+/* Mørke ruder tænder om aftenen */
+#artTown .pane, .artcopy .pane { transition: fill .7s ease; }
+.night .pane.st4 { fill: #ffcf4d; }
+
+/* Skorstenene puffer små røgskyer ud – helt langsomt i standby */
+.artpuff { transform-box: fill-box; transform-origin: 50% 100%; opacity: 0; animation: chimney 14s linear infinite; }
+.smoke .artpuff { animation-duration: 3.5s; }
+@keyframes chimney {
+  0% { transform: translate(-20px, 70px) scale(.25); opacity: 0; }
+  12% { opacity: 1; }
+  35% { transform: translate(0, 0) scale(1); opacity: 1; }
+  70% { opacity: .9; }
+  100% { transform: translate(70px, -190px) scale(1.25); opacity: 0; }
+}
+
+.lit { opacity: 0; transition: opacity .8s ease; }
+.night .lit { opacity: 1; }
+.lampglow { opacity: 0; transition: opacity 1s ease .4s; }
+.night .lampglow { opacity: 1; }
+
+.star { animation: tw 3s ease-in-out infinite; }
+@keyframes tw { 50% { opacity: .3; } }
+
+/* Skyerne driver langsomt hen over hele himlen */
+.cloud { animation: drift 180s linear infinite; animation-delay: -69s; --from: -870px; --to: 1390px; }
+.cloud.slow { animation-duration: 240s; animation-delay: -166s; --from: -1600px; --to: 720px; }
+.cloud.small { animation-duration: 300s; animation-delay: -100s; --from: -1250px; --to: 1000px; }
+@keyframes drift { from { transform: translateX(var(--from)); } to { transform: translateX(var(--to)); } }
+
+/* ---------- Nordlys ---------- */
+#aurora { opacity: 0; filter: blur(26px); transition: opacity 1.5s ease; }
+.aurora #aurora { opacity: .75; }
+.aurora #aurora .a1 { animation: wave 9s ease-in-out infinite; }
+.aurora #aurora .a2 { animation: wave 12s ease-in-out infinite reverse; }
+@keyframes wave {
+  0%, 100% { transform: translate(0, 0) scaleY(1); }
+  50% { transform: translate(-70px, 25px) scaleY(1.3); }
+}
+
+/* ---------- Juletræ og snemand popper op ---------- */
+.pop {
+  transform-box: fill-box; transform-origin: 50% 100%;
+  transform: scale(0);
+  transition: transform .5s cubic-bezier(.6, 0, .9, .4);
+}
+.tree #tree, .snowman #snowman {
+  transform: scale(1);
+  transition: transform .9s cubic-bezier(.34, 1.56, .64, 1);
+}
+.twinkle { animation: tw 1.4s ease-in-out infinite; }
+#treeStar { transform-box: fill-box; transform-origin: center; animation: pulse 1.8s ease-in-out infinite; }
+@keyframes pulse { 50% { transform: scale(1.18); } }
+
+/* ---------- Lyskæder ---------- */
+#strings .wire { opacity: 0; transition: opacity .8s ease; }
+.lights #strings .wire { opacity: 1; }
+.bulb { opacity: 0; transition: opacity .25s ease; }
+.lights .bulb { opacity: 1; }
+
+/* ---------- Skorstensrøg ---------- */
+#smoke { opacity: 0; transition: opacity 1.2s ease; }
+.smoke #smoke { opacity: 1; }
+.puff { transform-box: fill-box; transform-origin: center; opacity: 0; animation: puff 4.5s linear infinite; }
+@keyframes puff {
+  0% { transform: translate(0, 0) scale(.4); opacity: 0; }
+  12% { opacity: .75; }
+  100% { transform: translate(55px, -150px) scale(2.2); opacity: 0; }
+}
+
+/* ---------- Biler putter afsted ---------- */
+.carlight > g { opacity: 0; transition: opacity 1.2s ease; }
+.night .carlight > g { opacity: 1; }
+.putt { transform-box: fill-box; transform-origin: 50% 100%; animation: putt .34s ease-in-out infinite; }
+@keyframes putt {
+  0%, 100% { transform: scaleY(1) rotate(0deg); }
+  50% { transform: scaleY(.955) rotate(-.8deg); }
+}
+
+/* ---------- Nisser ---------- */
+.nisse { transform: translateY(230px); transition: transform .5s ease-in; }
+.nisser .nisse { transform: translateY(0); transition: transform .7s cubic-bezier(.34, 1.56, .64, 1); }
+.nisse .wob { transform-box: fill-box; transform-origin: 50% 100%; animation: wob 1.1s ease-in-out infinite; }
+@keyframes wob { 0%, 100% { transform: rotate(-7deg); } 50% { transform: rotate(7deg); } }
+
+/* ---------- Tekst og logo ---------- */
+#brand {
+  position: absolute; left: 1.8cqw; top: 1.6cqw; width: 9cqw; height: auto;
+  opacity: .8; filter: invert(0); transition: filter 1.5s ease;
+}
+.night #brand { filter: invert(1); }
+
+.signText {
+  font-family: "Mountains of Christmas", "Snell Roundhand", cursive; font-weight: 700;
+  font-size: 66px; letter-spacing: 1px;
+}
+.signText.cut { fill: #3f2016; stroke: #3f2016; stroke-width: 5px; stroke-linejoin: round; }
+.signText.paint { fill: #ffe1ad; }
+
+#hint {
+  position: absolute; left: 50%; bottom: 1.2cqw; transform: translateX(-50%);
+  font-family: "Mountains of Christmas", "Snell Roundhand", cursive; font-weight: 700;
+  font-size: 2.3cqw; color: #1d3130; white-space: nowrap;
+  text-shadow: 0 0 .3cqw #fff4e2, 0 0 .3cqw #fff4e2, 0 0 .6cqw #fff4e2, 0 0 .9cqw #fff4e2;
+  transition: opacity .8s ease, color 1.5s ease, text-shadow 1.5s ease;
+}
+.night #hint { color: #ffe1ad; text-shadow: 0 0 .3cqw #1d3130, 0 0 .3cqw #1d3130, 0 0 .6cqw #1d3130; }
+.idle #hint { opacity: 0; }
+
+#title {
+  position: absolute; inset: 0; display: grid; place-content: center; text-align: center;
+  background: radial-gradient(ellipse at center, rgba(255, 244, 226, .75), rgba(255, 244, 226, 0) 68%);
+  opacity: 0; pointer-events: none; transition: opacity .8s ease;
+}
+.idle #title { opacity: 1; }
+#title h1 {
+  font-family: "Mountains of Christmas", "Snell Roundhand", cursive; font-weight: 700;
+  font-size: 15cqw; line-height: 1; color: #d8452b;
+  text-shadow: 0 0 .5cqw #fff4e2, 0 0 .5cqw #fff4e2, 0 0 1cqw #fff4e2, 0 .6cqw 0 #8a2f1c, 0 1cqw 2.4cqw rgba(0, 0, 0, .35);
+}
+#title p {
+  margin-top: 1.2cqw; justify-self: center;
+  font-family: "Mountains of Christmas", "Snell Roundhand", cursive; font-weight: 700;
+  font-size: 4.2cqw; color: #1d3130;
+  text-shadow: 0 0 .4cqw #fff4e2, 0 0 .4cqw #fff4e2, 0 0 .8cqw #fff4e2, 0 0 1.4cqw #fff4e2;
+  animation: beat 1.8s ease-in-out infinite;
+}
+@keyframes beat { 50% { transform: scale(1.06); } }
+
+/* Forsidebillede (?plakat): ingen hjælpetekst */
+.poster #hint { display: none; }

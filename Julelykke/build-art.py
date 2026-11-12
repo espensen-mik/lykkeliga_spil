@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 """Fletter husene fra lykkeby.svg, julemanden fra santa.svg og bilerne fra
-"Car Cartoon Collection.svg" samt scooter-julemanden fra santa_scooter.svg ind i
-public/julelykke/index.html (mellem ART-, SANTA-, CARS- og SCOOTER-markørerne).
+"Car Cartoon Collection.svg", scooter-julemanden fra santa_scooter.svg og de otte
+nisser fra "Christmas Elf 1-8.svg" ind i public/julelykke/index.html
+(mellem ART-, SANTA-, CARS-, SCOOTER- og ELVES-markørerne).
 
 Kør igen, hvis en af filerne bliver ændret:  python3 build-art.py
 """
@@ -141,5 +142,31 @@ a, b = '<!-- SCOOTER:START -->', '<!-- SCOOTER:END -->'
 i, j = html.index(a) + len(a), html.index(b)
 html = html[:i] + scooter + html[j:]
 
+# --- Nisser: otte figurer. Den grønne dragt og hue farves rød, og klasserne skrives om
+# til faste farver, fordi de otte filer bruger de samme klassenavne til forskellige farver.
+ELF_RED = {'#529948': '#d8452b', '#3e7235': '#a8321f'}
+elves = ''
+for n in range(1, 9):
+    raw = (HERE / f'Christmas Elf {n}.svg').read_text(encoding='utf-8')
+    fills = {}
+    for names, body in re.findall(r'([^{}]+)\{([^}]*)\}', re.search(r'<style>(.*?)</style>', raw, re.S).group(1)):
+        m = re.search(r'fill:\s*(#[0-9a-fA-F]{3,6})', body)
+        if m:
+            for name in re.findall(r'\.([\w-]+)', names):
+                fills[name] = ELF_RED.get(m.group(1).lower(), m.group(1).lower())
+    eroot = ET.fromstring(raw)
+    for e in eroot.iter():
+        cls = e.attrib.pop('class', None)
+        if cls in fills:
+            e.set('fill', fills[cls])
+        for k in ('id', 'data-name'):
+            e.attrib.pop(k, None)
+    body = ''.join(ser(g) for g in eroot if g.tag == f'{{{NS}}}g')
+    elves += f'<g id="elf{n}">{body}</g>'
+elves = '\n      ' + elves + '\n      '
+a, b = '<!-- ELVES:START -->', '<!-- ELVES:END -->'
+i, j = html.index(a) + len(a), html.index(b)
+html = html[:i] + elves + html[j:]
+
 page.write_text(html, encoding='utf-8')
-print(f'Flettede {len(art) // 1024} KB huse, {len(santa) // 1024} KB julemand, {len(cars) // 1024} KB biler og {len(scooter) // 1024} KB scooter ind i index.html')
+print(f'Flettede {len(art) // 1024} KB huse, {len(santa) // 1024} KB julemand, {len(cars) // 1024} KB biler {len(scooter) // 1024} KB scooter og {len(elves) // 1024} KB nisser ind i index.html')

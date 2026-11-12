@@ -6,7 +6,7 @@ Små spil fra LykkeLiga, samlet på én forside.
 | --- | --- | --- |
 | `/` | Forsiden LykkeSpil med en plakat for hvert spil | `public/index.html` |
 | `/maalrekord/` | Kvie Sø Rekord 2026 – måltæller | `public/maalrekord/` |
-| `/julelykke/` | JuleLykke – julehygge med ét tryk | `public/julelykke/` |
+| `/julelykke/` | Jul i LykkeBy – julehygge med ét tryk | `public/julelykke/` |
 
 Et nyt spil lægges i sin egen undermappe i `public/` og får et kort på forsiden (`.card` i `public/index.html`) med et billede i `public/covers/`.
 
@@ -20,11 +20,11 @@ Scoren følger den konkrete browserprofil og webadresse, ikke hele computeren. P
 
 Skærmen viser KVIE SØ REKORD 2026, det gemte målantal og LykkeLiga-logoet. "Ret antal mål" åbner et felt til at gendanne eller korrigere den samlede score. Gem bekræfter ændringen; Annuller eller Escape lukker uden ændringer.
 
-## JuleLykke
+## Jul i LykkeBy
 
 Fuldskærmsspil i 16:9 til buzzerknap (mellemrum, Enter eller klik). Byen står i en rolig standby, og hvert tryk udløser én tilfældig hændelse, hvorefter byen vender tilbage til standby.
 
-Tegningerne ligger som kildefiler i `Julelykke/` (huse, julemand, biler og scooter) og flettes ind i `public/julelykke/index.html` af `python3 Julelykke/build-art.py`. Kør scriptet igen, hvis en af SVG-filerne ændres. Kildefilerne udgives ikke.
+Tegningerne ligger som kildefiler i `Julelykke/` (huse, julemand, biler og scooter; de er ikke med i repoet) og flettes ind i `public/julelykke/index.html` af `python3 Julelykke/build-art.py`. Kør scriptet igen, hvis en af SVG-filerne ændres. Kildefilerne udgives ikke.
 
 `/julelykke/?vindue` starter uden fuldskærm, og `/julelykke/?plakat` viser den faste aftenscene, som forsidebilledet `public/covers/julelykke.jpg` er taget fra.
 

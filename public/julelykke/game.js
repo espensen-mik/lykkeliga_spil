@@ -1,4 +1,4 @@
-// JuleLykke – tryk på knappen (mellemrum / Enter / klik) for julehygge.
+// Jul i LykkeBy – tryk på knappen (mellemrum / Enter / klik) for julehygge.
 (() => {
   'use strict';
   const NS = 'http://www.w3.org/2000/svg';
@@ -104,21 +104,21 @@
       }
     });
 
-    // Nisser bag tagene
+    // Nisser (Christmas Elf 1-8.svg): tre kigger op bag tagene, fem popper op i sneen foran husene
+    const ELF = [[600, 736], [630, 732], [499, 733], [617, 733], [648, 743], [619, 733], [624, 732], [599, 733]]; // bredde, højde
+    const elf = (n, x, bottom, k, parent) =>
+      el('use', { href: '#elf' + n, transform: `translate(${x - ELF[n - 1][0] * k / 2},${bottom - ELF[n - 1][1] * k}) scale(${k})` }, parent);
     const nisser = $('nisser');
-    [aL(420, 3640), aL(905, 3800), aR(3120, 3640)].forEach((p, i) => {
+    [[6, aL(420, 3640)], [1, aL(905, 3800)], [4, aR(3120, 3640)]].forEach(([n, p], i) => {
       const g = el('g', { class: 'nisse', style: `transition-delay:${i * 180}ms` }, nisser);
       const w = el('g', { class: 'wob', style: `animation-delay:${-i * .35}s` }, g);
-      const t = el('g', { transform: `translate(${p.x},${p.y - 34}) scale(1.35)` }, w);
-      el('rect', { x: -22, y: 24, width: 44, height: 110, rx: 10, fill: C.rust }, t);
-      el('circle', { cx: 0, cy: 6, r: 22, fill: '#f6c9a8' }, t);
-      el('path', { d: 'M-26,-6 Q-12,-58 14,-72 Q24,-40 26,-6Z', fill: '#d8452b' }, t);
-      el('circle', { cx: 14, cy: -72, r: 9, fill: C.snow }, t);
-      el('rect', { x: -30, y: -14, width: 60, height: 13, rx: 6.5, fill: C.snow }, t);
-      el('circle', { cx: -8, cy: 3, r: 3, fill: C.night }, t);
-      el('circle', { cx: 8, cy: 3, r: 3, fill: C.night }, t);
-      el('path', { d: 'M-22,10 Q0,62 22,10 Q0,24 -22,10Z', fill: C.snow }, t);
-      el('circle', { cx: 0, cy: 11, r: 5.5, fill: '#e58f80' }, t);
+      elf(n, p.x, p.y + 42, .2, w); // ca. overkroppen stikker op over taget
+    });
+    const nisserFront = $('nisserFront');
+    [[5, 235, 1012], [2, 505, 996], [3, 985, 1004], [7, 1215, 992], [8, 1440, 1010]].forEach(([n, x, y], i) => {
+      const g = el('g', { class: 'elfpop', style: `transition-delay:${200 + i * 140}ms` }, nisserFront);
+      const w = el('g', { class: 'wob', style: `animation-delay:${-i * .27}s` }, g);
+      elf(n, x, y, .2, w);
     });
 
     // Stjerner

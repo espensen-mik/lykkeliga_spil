@@ -5,12 +5,12 @@ Små spil fra LykkeLiga, samlet på én forside.
 | Adresse | Indhold | Mappe |
 | --- | --- | --- |
 | `/` | Forsiden LykkeSpil med en plakat for hvert spil | `public/index.html` |
-| `/maalrekord/` | Kvie Sø Rekord 2026 – måltæller | `public/maalrekord/` |
+| `/maalrekord/` | Målrekord – måltæller | `public/maalrekord/` |
 | `/julelykke/` | Jul i LykkeBy – julehygge med ét tryk | `public/julelykke/` |
 
 Et nyt spil lægges i sin egen undermappe i `public/` og får et kort på forsiden (`.card` i `public/index.html`) med et billede i `public/covers/`.
 
-## Kvie Sø Rekord 2026
+## Målrekord
 
 En enkel lokal måltæller til holdet. Klik på målknappen eller tryk mellemrum. En tast, der holdes nede, tæller kun ét mål.
 
@@ -18,7 +18,7 @@ Scoren gemmes i browserens localStorage og bliver stående efter genindlæsning 
 
 Scoren følger den konkrete browserprofil og webadresse, ikke hele computeren. Privat browsing, rydning af browserdata og skift fra Vercel-adressen til eget domæne kan derfor give en ny tæller. Flere enheder har hver sin score. Flere åbne faner opdaterer hinanden, men brug én fane til optælling for at undgå samtidige ændringer.
 
-Skærmen viser KVIE SØ REKORD 2026, det gemte målantal og LykkeLiga-logoet. "Ret antal mål" åbner et felt til at gendanne eller korrigere den samlede score. Gem bekræfter ændringen; Annuller eller Escape lukker uden ændringer.
+Skærmen viser MÅLREKORD, det gemte målantal og LykkeLiga-logoet. "Ret antal mål" åbner et felt til at gendanne eller korrigere den samlede score. Gem bekræfter ændringen; Annuller eller Escape lukker uden ændringer.
 
 ## Jul i LykkeBy
 

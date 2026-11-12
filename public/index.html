@@ -17,10 +17,9 @@
   a { color: inherit; text-decoration: none; }
   .wrap { width: min(1280px, 100% - 48px); margin-inline: auto; }
 
-  header { display: flex; align-items: center; gap: 18px; padding: 22px 0; }
+  header { display: flex; align-items: center; justify-content: space-between; gap: 18px; padding: 24px 0; }
   header img { height: 34px; width: auto; filter: invert(1); opacity: .92; }
-  .brand { font-family: 'Barlow Condensed', Impact, sans-serif; font-weight: 800; font-size: 34px; letter-spacing: .02em; line-height: 1; }
-  .brand span { color: var(--red); }
+  .brand { font-size: 15px; font-weight: 500; letter-spacing: .22em; text-transform: uppercase; color: var(--muted); }
 
   /* Udvalgt spil */
   .hero { position: relative; display: block; border-radius: 20px; overflow: hidden; aspect-ratio: 21 / 9; min-height: 340px; width: 100%; background: #0d1a15; isolation: isolate; }
@@ -49,9 +48,9 @@
   /* Plakat til målrekord-spillet */
   .cover.maal { background: var(--paper); color: var(--ink); }
   .cover.maal .t { position: absolute; left: 7cqw; top: 50%; transform: translateY(-50%); font-family: 'Barlow Condensed', Impact, sans-serif; font-weight: 800; line-height: .9; }
-  .cover.maal .t small { display: block; font-size: 6.6cqw; letter-spacing: .03em; }
-  .cover.maal .t b { display: block; font-size: 22cqw; color: var(--red); letter-spacing: -.01em; }
-  .cover.maal .t i { display: block; font: 500 4.2cqw 'DM Sans', sans-serif; margin-top: 1.5cqw; }
+    .cover.maal .t b { display: block; font-size: 15cqw; letter-spacing: .01em; }
+  .cover.maal .t b + b { color: var(--red); }
+  .cover.maal .t i { display: block; font: 500 4.2cqw 'DM Sans', sans-serif; margin-top: 2.5cqw; }
   .cover.maal img { position: absolute; right: 1cqw; bottom: -3cqw; width: 40cqw; height: auto; object-fit: contain; mix-blend-mode: multiply; }
 
   .soon .cover { display: grid; place-items: center; background: transparent; border: 2px dashed #3b5a4d; box-shadow: none; color: var(--muted); font-weight: 600; }
@@ -70,7 +69,7 @@
 <div class="wrap">
   <header>
     <img src="lykkeliga-logo.svg" alt="LykkeLiga">
-    <div class="brand">Lykke<span>Spil</span></div>
+    <div class="brand">LykkeSpil</div>
   </header>
 
   <main>
@@ -93,11 +92,11 @@
       </a>
       <a class="card" href="maalrekord/">
         <div class="cover maal">
-          <div class="t"><small>KVIE SØ REKORD</small><b>2026</b><i>i lykkelige håndboldmål</i></div>
+          <div class="t"><b>MÅL</b><b>REKORD</b><i>slå jeres helt egen rekord</i></div>
           <img src="covers/lykkelars.png" alt="" loading="lazy">
         </div>
-        <h3>Kvie Sø Rekord 2026</h3>
-        <p>Måltælleren, der holder styr på alle de lykkelige håndboldmål.</p>
+        <h3>Målrekord</h3>
+        <p>Slå jeres helt egen rekord i lykkelige håndboldmål.</p>
       </a>
       <div class="card soon" aria-hidden="true">
         <div class="cover">Flere spil på vej</div>
